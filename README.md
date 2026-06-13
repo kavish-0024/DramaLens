@@ -1,5 +1,7 @@
-# K-Drama Recommender
 
+# K-Drama Recommender
+Live demo: https://dramalens.onrender.com/
+Detailed writeup: https://drive.google.com/file/d/1EOm_rtN688hmp0r7FTeMCM6O5vnMgBGb/view
 A K-Drama Recommendation System built with Python and Flask. This application suggests similar dramas based on a user's selected title, utilizing a machine learning model to find the closest matches.
 
 ## How It Works
@@ -58,3 +60,4 @@ This project strictly utilizes the following technologies and libraries:
 ## Deployment
 
 The project includes a `Procfile` configured for **Gunicorn** (`web: gunicorn app:app`), making it ready for deployment on platforms that support Python WSGI applications.
+
