@@ -1,0 +1,527 @@
+/* Define the light theme color system and shared sizing tokens. */
+:root {
+    color-scheme: light;
+    --bg: #f7f3ee;
+    --surface: #ffffff;
+    --surface-soft: #fff8ef;
+    --ink: #171412;
+    --muted: #68605a;
+    --line: #e3d8cc;
+    --accent: #bd3f2b;
+    --accent-strong: #8f2d21;
+    --accent-soft: #ffe0d8;
+    --teal: #0f766e;
+    --teal-soft: #dff4f0;
+    --gold: #8a5b00;
+    --gold-soft: #fff0bf;
+    --shadow: 0 22px 60px rgba(43, 31, 21, 0.12);
+    --radius: 8px;
+}
+
+/* Override the same design tokens when dark mode is active. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #121418;
+    --surface: #1b2027;
+    --surface-soft: #242a33;
+    --ink: #f7efe7;
+    --muted: #c0b5aa;
+    --line: #343b46;
+    --accent: #ff7968;
+    --accent-strong: #ff9b8e;
+    --accent-soft: #47251f;
+    --teal: #7dd3c7;
+    --teal-soft: #173a38;
+    --gold: #ffd166;
+    --gold-soft: #463811;
+    --shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* Normalize sizing so form controls and cards are predictable across browsers. */
+* {
+    box-sizing: border-box;
+}
+
+/* Style the page canvas with layered but restrained visual depth. */
+body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(circle at 12% 8%, rgba(15, 118, 110, 0.16), transparent 28rem),
+        radial-gradient(circle at 86% 12%, rgba(189, 63, 43, 0.14), transparent 26rem),
+        linear-gradient(180deg, var(--surface-soft), var(--bg) 42%);
+    color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Keep the brand and theme control visible without taking over the page. */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 16px 0;
+    backdrop-filter: blur(16px);
+}
+
+/* Render the brand as a compact, clickable home affordance. */
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    font-weight: 900;
+    text-decoration: none;
+}
+
+/* Give the brand a small monogram that works in both themes. */
+.brand-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.82rem;
+    letter-spacing: 0;
+}
+
+/* Make the theme toggle clear, compact, and keyboard-friendly. */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 40px;
+    padding: 0 13px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* Draw the toggle icon in CSS so no extra asset is needed. */
+.theme-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: inset -5px -3px 0 var(--surface);
+}
+
+/* Constrain the main content while leaving generous responsive breathing room. */
+.shell {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 34px 0 64px;
+}
+
+/* Build a first-viewport hero that leads directly into the working app. */
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
+    gap: 28px;
+    align-items: end;
+    min-height: 300px;
+}
+
+/* Keep hero copy readable and avoid oversized text inside smaller containers. */
+.hero-copy {
+    max-width: 820px;
+}
+
+/* Standardize text spacing across headings and paragraphs. */
+h1,
+h2,
+h3,
+p {
+    margin-top: 0;
+}
+
+/* Style section labels with strong contrast and no negative letter spacing. */
+.eyebrow {
+    margin-bottom: 10px;
+    color: var(--accent-strong);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+/* Size the page headline for a polished hero without viewport-based font scaling. */
+h1 {
+    max-width: 780px;
+    margin-bottom: 18px;
+    font-size: 5.2rem;
+    line-height: 0.96;
+    letter-spacing: 0;
+}
+
+/* Make supporting copy calm and easy to scan. */
+.intro {
+    max-width: 690px;
+    color: var(--muted);
+    font-size: 1.08rem;
+    line-height: 1.7;
+}
+
+/* Present dataset stats as two stable panels beside the hero. */
+.stat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+/* Style each stat as a reusable compact surface. */
+.stat-grid div {
+    min-height: 128px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    box-shadow: var(--shadow);
+}
+
+/* Emphasize the numeric stat while keeping labels secondary. */
+.stat-grid strong {
+    display: block;
+    color: var(--accent);
+    font-size: 2.7rem;
+    line-height: 1;
+}
+
+/* Keep stat labels compact and readable. */
+.stat-grid span {
+    display: block;
+    margin-top: 8px;
+    color: var(--muted);
+    font-weight: 800;
+}
+
+/* Share the same framed surface treatment across search and notice sections. */
+.search-panel,
+.notice {
+    margin-top: 28px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    box-shadow: var(--shadow);
+}
+
+/* Give critical model errors a distinct but theme-aware appearance. */
+.notice-error {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent-soft) 42%, var(--surface));
+}
+
+/* Make form labels readable and aligned with their controls. */
+label,
+.field {
+    display: grid;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-weight: 850;
+}
+
+/* Keep the main title input and action button on one row where space allows. */
+.input-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+}
+
+/* Normalize interactive controls for consistent height and focus behavior. */
+input,
+select,
+button {
+    min-height: 48px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font: inherit;
+}
+
+/* Style text and select controls with theme-aware backgrounds. */
+input,
+select {
+    width: 100%;
+    padding: 0 14px;
+    background: var(--surface-soft);
+    color: var(--ink);
+}
+
+/* Provide a clear focus state for keyboard and assistive technology users. */
+input:focus,
+select:focus,
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--teal) 45%, transparent);
+    outline-offset: 2px;
+}
+
+/* Style the primary recommendation action with a strong but restrained accent. */
+.primary-action,
+.suggestions button {
+    padding: 0 22px;
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+/* Give buttons a simple hover state that works in light and dark themes. */
+.primary-action:hover,
+.suggestions button:hover {
+    background: var(--accent-strong);
+}
+
+/* Arrange filters in a dense grid for efficient repeated searching. */
+.filters {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+/* Space notice headings and body copy cleanly. */
+.notice h2 {
+    margin-bottom: 6px;
+}
+
+/* Lay out suggestion actions without causing layout shifts. */
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+/* Keep suggestion buttons compact while preserving readable text. */
+.suggestions button {
+    min-height: 40px;
+    border-color: var(--line);
+}
+
+/* Align result summary content on desktop and stack it on small screens. */
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: end;
+    margin: 42px 0 18px;
+}
+
+/* Size the selected title as a section heading, not a second hero. */
+.results-header h2 {
+    margin: 0;
+    font-size: 3rem;
+    line-height: 1.05;
+}
+
+/* Make recommendation count secondary but visible. */
+.results-header > p {
+    color: var(--muted);
+    font-weight: 850;
+}
+
+/* Create a responsive card grid with stable columns. */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* Style recommendation cards as focused content units. */
+.card {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    min-height: 320px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--surface) 95%, transparent);
+    box-shadow: 0 14px 34px rgba(43, 31, 21, 0.08);
+}
+
+/* Keep score and rating badges balanced at the top of each card. */
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Share badge layout between score, rating, and genre chips. */
+.score,
+.rating,
+.chips span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 850;
+    line-height: 1;
+}
+
+/* Use teal to signal similarity strength. */
+.score {
+    background: var(--teal-soft);
+    color: var(--teal);
+}
+
+/* Use warm gold to separate rating from matching. */
+.rating {
+    background: var(--gold-soft);
+    color: var(--gold);
+}
+
+/* Keep card titles readable even when drama names are long. */
+.card h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.22;
+    overflow-wrap: anywhere;
+}
+
+/* Wrap genre chips without changing the card width. */
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Style each genre chip as quiet metadata rather than a button. */
+.chips span {
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    color: var(--muted);
+}
+
+/* Lay definition-list metadata out as compact stacked rows. */
+dl {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+}
+
+/* Distinguish metadata labels from values with size and weight. */
+dt {
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 850;
+    text-transform: uppercase;
+}
+
+/* Keep metadata values readable and resilient to long cast names. */
+dd {
+    margin: 3px 0 0;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+/* Finish with a compact footer that matches the app surface. */
+.footer {
+    padding: 38px 20px 44px;
+    border-top: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    text-align: center;
+}
+
+/* Constrain footer text for comfortable reading. */
+.footer-content {
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+/* Treat footer brand text as a section title. */
+.footer h2 {
+    margin-bottom: 10px;
+    color: var(--accent);
+    font-size: 1.7rem;
+}
+
+/* Make footer body copy secondary. */
+.footer p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* Present footer highlights as readable pills. */
+.footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+/* Style each footer highlight without overpowering the page. */
+.footer-links span {
+    padding: 8px 13px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--teal-soft);
+    color: var(--teal);
+    font-size: 0.85rem;
+    font-weight: 850;
+}
+
+/* Collapse major grids for tablets and narrower laptop windows. */
+@media (max-width: 900px) {
+    .hero,
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Stack controls and tighten spacing for mobile screens. */
+@media (max-width: 620px) {
+    .site-header,
+    .shell {
+        width: min(100% - 24px, 1180px);
+    }
+
+    .shell {
+        padding-top: 22px;
+    }
+
+    h1 {
+        font-size: 2.65rem;
+    }
+
+    .results-header h2 {
+        font-size: 2rem;
+    }
+
+    .input-row,
+    .filters,
+    .results-header,
+    .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .primary-action {
+        width: 100%;
+    }
+}

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Define document metadata and load the site stylesheet. -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="DramaLens recommends K-Dramas using story, genre, cast, rating, and popularity signals.">
+    <title>DramaLens | K-Drama Recommender</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <!-- Provide a sticky header with brand identity and a persistent theme toggle. -->
+    <header class="site-header">
+        <a class="brand" href="/" aria-label="DramaLens home">
+            <span class="brand-mark" aria-hidden="true">DL</span>
+            <span>DramaLens</span>
+        </a>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+            <span class="theme-icon" aria-hidden="true"></span>
+            <span class="theme-text">Dark</span>
+        </button>
+    </header>
+
+    <!-- Introduce the recommender and keep the primary search visible in the first viewport. -->
+    <main class="shell">
+        <section class="hero">
+            <div class="hero-copy">
+                <p class="eyebrow">K-Drama discovery engine</p>
+                <h1>Find the next drama that fits your mood.</h1>
+                <p class="intro">
+                    Search a title you already love, tune the filters, and get recommendations
+                    ranked by story, genre, cast, ratings, and audience signals.
+                </p>
+            </div>
+
+            <aside class="stat-grid" aria-label="Dataset summary">
+                <div>
+                    <strong>5,000</strong>
+                    <span>dramas indexed</span>
+                </div>
+                <div>
+                    <strong>{{ genres|length }}</strong>
+                    <span>genres mapped</span>
+                </div>
+            </aside>
+        </section>
+
+        <!-- Show model startup problems clearly when dependencies or pickle files are missing. -->
+        {% if load_error %}
+        <section class="notice notice-error" role="alert">
+            <h2>Recommendation model is not ready</h2>
+            <p>{{ load_error }}. Install the dependencies in requirements.txt and make sure all pickle files are present.</p>
+        </section>
+        {% endif %}
+
+        <!-- Collect the title and filter choices used by the recommendation route. -->
+        <form class="search-panel" action="/recommend" method="POST">
+            <div class="field field-title">
+                <label for="drama">Drama title</label>
+                <div class="input-row">
+                    <input
+                        id="drama"
+                        name="drama"
+                        list="drama-list"
+                        value="{{ selected or '' }}"
+                        placeholder="Try Goblin, Reply 1988, Crash Landing on You..."
+                        autocomplete="off"
+                        required
+                    >
+                    <button class="primary-action" type="submit">Recommend</button>
+                </div>
+            </div>
+
+            <!-- Populate browser-native autocomplete suggestions from the loaded dataframe. -->
+            <datalist id="drama-list">
+                {% for drama in dramas %}
+                <option value="{{ drama }}"></option>
+                {% endfor %}
+            </datalist>
+
+            <!-- Let users refine results without leaving the main search flow. -->
+            <div class="filters">
+                <label>
+                    Genre
+                    <select name="genre">
+                        <option value="">Any genre</option>
+                        {% for genre in genres %}
+                        <option value="{{ genre }}" {% if selected_genre == genre %}selected{% endif %}>{{ genre }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label>
+                    Minimum rating
+                    <select name="min_rating">
+                        {% for rating in ratings %}
+                        <option value="{{ rating }}" {% if selected_rating == rating %}selected{% endif %}>{{ rating if rating else 'Any' }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label>
+                    Results
+                    <select name="limit">
+                        {% for count in counts %}
+                        <option value="{{ count }}" {% if selected_limit == count or (not selected_limit and count == 8) %}selected{% endif %}>{{ count }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label>
+                    Sort by
+                    <select name="sort_by">
+                        <option value="match" {% if selected_sort == 'match' %}selected{% endif %}>Best match</option>
+                        <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>Highest rating</option>
+                        <option value="popularity" {% if selected_sort == 'popularity' %}selected{% endif %}>Popularity</option>
+                    </select>
+                </label>
+            </div>
+        </form>
+
+        <!-- Offer clickable title suggestions when the submitted title is not an exact match. -->
+        {% if suggestions %}
+        <section class="notice">
+            <h2>No exact title found</h2>
+            <p>Try one of these close matches.</p>
+            <div class="suggestions">
+                {% for title in suggestions %}
+                <form action="/recommend" method="POST">
+                    <input type="hidden" name="drama" value="{{ title }}">
+                    <button type="submit">{{ title }}</button>
+                </form>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Summarize the active recommendation set above the result cards. -->
+        {% if recommendations %}
+        <section class="results-header">
+            <div>
+                <p class="eyebrow">Because you liked</p>
+                <h2>{{ selected }}</h2>
+            </div>
+            <p>{{ recommendations|length }} recommendations</p>
+        </section>
+
+        <!-- Render each recommendation with score, rating, genre chips, and useful metadata. -->
+        <section class="cards" aria-label="Recommended dramas">
+            {% for drama in recommendations %}
+            <article class="card">
+                <div class="card-top">
+                    <span class="score">{{ drama['match_score'] }}% match</span>
+                    <span class="rating">{{ drama['rating'] or 'N/A' }}/10</span>
+                </div>
+
+                <h3>{{ drama['name'] }}</h3>
+
+                <div class="chips" aria-label="Genres">
+                    {% for genre in drama['genres_list'][:4] %}
+                    <span>{{ genre }}</span>
+                    {% endfor %}
+                </div>
+
+                <dl>
+                    <div>
+                        <dt>Director</dt>
+                        <dd>{{ drama['director'] or 'Unknown' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Main cast</dt>
+                        <dd>{{ drama['cast_list'][:3]|join(', ') or 'Unknown' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Popularity rank</dt>
+                        <dd>{% if drama['popularity'] %}#{{ drama['popularity'] }}{% else %}Unknown{% endif %}</dd>
+                    </div>
+                </dl>
+            </article>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </main>
+
+    <!-- Close the page with compact deployment-friendly product context. -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h2>DramaLens</h2>
+            <p>Built for fast K-Drama discovery with notebook-trained recommendations and a clean Flask interface.</p>
+            <div class="footer-links" aria-label="Highlights">
+                <span>5,000+ dramas</span>
+                <span>Smart matching</span>
+                <span>Deploy-ready Flask app</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Persist and apply the selected light/dark theme before the user starts browsing. -->
+    <script>
+        const toggle = document.querySelector(".theme-toggle");
+        const themeText = document.querySelector(".theme-text");
+        const savedTheme = localStorage.getItem("dramalens-theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        function applyTheme(theme) {
+            document.documentElement.dataset.theme = theme;
+            toggle.setAttribute("aria-pressed", theme === "dark");
+            themeText.textContent = theme === "dark" ? "Light" : "Dark";
+            localStorage.setItem("dramalens-theme", theme);
+        }
+
+        applyTheme(savedTheme || (prefersDark ? "dark" : "light"));
+
+        toggle.addEventListener("click", () => {
+            const currentTheme = document.documentElement.dataset.theme;
+            applyTheme(currentTheme === "dark" ? "light" : "dark");
+        });
+    </script>
+</body>
+
+</html>
