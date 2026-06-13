@@ -1,7 +1,7 @@
 
 # K-Drama Recommender
 Live demo: https://dramalens.onrender.com/ <br>
-Detailed writeup: https://drive.google.com/file/d/1EOm_rtN688hmp0r7FTeMCM6O5vnMgBGb/view
+Detailed writeup: https://drive.google.com/file/d/1EOm_rtN688hmp0r7FTeMCM6O5vnMgBGb/view <br>
 A K-Drama Recommendation System built with Python and Flask. This application suggests similar dramas based on a user's selected title, utilizing a machine learning model to find the closest matches.
 
 ## How It Works
