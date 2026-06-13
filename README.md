@@ -1,6 +1,6 @@
 # K-Drama Recommender
 
-A K-Drama Recommendation System built with Python and Flask. This application suggests similar Korean dramas based on a user's selected title, utilizing a machine learning model to find the closest matches.
+A K-Drama Recommendation System built with Python and Flask. This application suggests similar dramas based on a user's selected title, utilizing a machine learning model to find the closest matches.
 
 ## How It Works
 
